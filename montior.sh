@@ -13,16 +13,25 @@ then
         exit 1
 fi
 }
+print_line(){
+	echo "$1 section" 
+	print_star
+}
+#-------------------------------------------------------
 echo "Welcome $(whoami)"
 error_check
 if [ "$1" == '-s' ]
 then
+print_star
+print_line "System"
 echo "System uptime is: $(uptime -p)"
 error_check
-echo "Number of users are: $(uptime | cut -d "," -f 2)"
+echo "Number of users are: $(uptime | cut -d "," -f 2 | tr -d " " )"
 error_check
-cat /etc/os-release | grep "PRETTY_NAME" | echo Operating System : $(cut -d "=" -f 2)
+cat /etc/os-release | grep "PRETTY_NAME" | echo Operating System : $(cut -d "=" -f 2 | tr -d " ")
 error_check
+lscpu | grep "Model name" | echo "CPU-Model-name: $(cut -d ":" -f 2 | tr -d " ")"
+
 upower -v >> /dev/null
 if [ $? != 0 ]
 then
@@ -31,7 +40,16 @@ then
 		sudo apt install uptime >> /dev/null # currently doing only for debian but we have to package manager of all other distro as well 
 		echo "Installing upower command"
 fi
-upower -b | grep "percentage" | echo "Battery Percentage : $(cut -d ":" -f 2)"
+print_star
+#-------------------------------------------------------
+print_line "Battery"
+upower -b | grep "percentage" | echo "Battery Percentage: $(cut -d ":" -f 2 | tr -d " ")"
+upower -b | grep "state" | echo "Current-state: $(cut -d ":" -f 2 | tr -d " ")"
+upower -b | grep "temperature" | echo "Battery Temperature: $(cut -d ":" -f 2 | tr -d " ")"
+upower -b | grep " charge-start-threshold" | echo "Charging-Threshold-start: $(cut -d ":" -f 2 | tr -d " ")"
+upower -b | grep " charge-end-threshold" | echo "Charging-Threshold-end: $(cut -d ":" -f 2 | tr -d " ")"
+upower -b | grep "charge-cycles" | echo "Number of charge cycles: $(cut -d ":" -f 2 | tr -d " ")"
+upower -b | grep "time to empty" | echo "Time to empty: $(cut -d ":" -f 2 | tr -d " ")"
 #------------------------------------------------------
 elif [ "$1" == '-n' ]
 then
