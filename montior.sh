@@ -3,8 +3,8 @@
 # os realted which is /etc/os-release file , battery related info , cpu realted info, 
 #---------------------------------------------------------------
 #variables
-battery_info_path=/sys/class/power_supply
-batteries=$(ls $battery_info_path | grep -i "bat")
+# battery_info_path=/sys/class/power_supply
+# batteries=$(ls $battery_info_path | grep -i "bat")
 
 #---------------------------------------------------------------
 #functions
@@ -24,48 +24,27 @@ print_line(){
 	echo "$1 section" 
 	print_star
 }
+run_script(){
+	"$(dirname "$0")"/$1
+}
 #-------------------------------------------------------
 echo "WELCOME $(whoami)"
 error_check
 if [ "$1" == '-s' ]
 then
-print_star
-print_line "System"
-echo "System uptime is: $(uptime -p)"
-error_check
-echo "Number of users are: $(uptime | cut -d "," -f 2 | tr -d " " )"
-error_check
-cat /etc/os-release | grep "PRETTY_NAME" | echo Operating System : $(cut -d "=" -f 2 | tr -d " ")
-error_check
-lscpu | grep "Model name" | echo "CPU-Model-name: $(cut -d ":" -f 2 | tr -d " ")"
+	run_script modules/system.sh
 #-------------------------------------------------------
-print_line "Battery"
-echo "Number of Batteries: $(echo $batteries | wc -l)";
-for i in $batteries;
-do 
-	echo "-------------------------------------------------"
-	echo "$i: "
-	echo "Model: $(cat $battery_info_path/$i/model_name)";
-	echo "Manufacturer: $(cat $battery_info_path/$i/manufacturer)";
-	echo "Serial_Number: $(cat $battery_info_path/$i/serial_number)";
-	echo "percentage: $(cat $battery_info_path/$i/capacity)";
-	echo "Status: $(cat $battery_info_path/$i/status)";
-	echo "Health: $(cat $battery_info_path/$i/health)";
-	echo "Status: $(cat $battery_info_path/$i/status)";
-	echo "Charge_Start_Threshold: $(cat $battery_info_path/$i/charge_control_start_threshold)";
-	echo "Charge_End_Threshold: $(cat $battery_info_path/$i/charge_control_end_threshold)";
-	echo "Cycles_Completed: $(cat $battery_info_path/$i/cycle_count)";
-	echo "--------------------------------------------------"
-done
+elif [ "$1" == "-b" ]
+then
+	run_script modules/battery.sh
 #------------------------------------------------------
 elif [ "$1" == '-n' ]
 then
-	echo "networking monitoring"
-
+	run_script modules/networking.sh
 #------------------------------------------------------
 elif [ "$1" == '-h' ]
 then 
-	echo "help section"
+	run_script modules/help.sh
 #-------------------------------------------------------
 else
 	print_star
