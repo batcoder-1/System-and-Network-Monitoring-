@@ -37,6 +37,9 @@ do
 	echo "percentage: $(cat $battery_info_path/$i/capacity)";
 	echo "Health: $(cat $battery_info_path/$i/health)";
 	echo "Status: $(cat $battery_info_path/$i/status)";
+	temp_kelvin=$(cat $battery_info_path/$i/temp)
+	temp_celsius=$(($temp_kelvin - 273))
+	echo "Temperature: $temp_celsius deg C";
 	echo "Charge_Start_Threshold: $(cat $battery_info_path/$i/charge_control_start_threshold)";
 	echo "Charge_End_Threshold: $(cat $battery_info_path/$i/charge_control_end_threshold)";
 	echo "Cycles_Completed: $(cat $battery_info_path/$i/cycle_count)";
