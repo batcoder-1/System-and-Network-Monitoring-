@@ -19,12 +19,27 @@ print_line(){
 #-------------------------------------------------------
 print_star
 print_line "System"
-echo "System uptime is: $(uptime -p)"
-error_check
-echo "Number of users are: $(uptime | cut -d "," -f 2 | tr -d " " )"
-error_check
-cat /etc/os-release | grep "PRETTY_NAME" | echo Operating System : $(cut -d "=" -f 2 | tr -d " ")
-error_check
-lscpu | grep "Model name" | echo "CPU-Model-name: $(cut -d ":" -f 2 | tr -d " ")"
-print_star  
+echo "Kernel Version: $(uname -r)"
+echo "System Uptime: $(uptime -p)"
+
+USERS=$(uptime | cut -d "," -f 2 | xargs)
+echo "Active Users: $USERS"
+
+OS=$(grep PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')
+echo "Operating System: $OS"
+
+CPU=$(lscpu | grep "Model name" | cut -d: -f2 | xargs)
+echo "CPU Model: $CPU"
+
+ARCH=$(lscpu | grep -i "architecture" | cut -d: -f2 | xargs)
+echo "Architecture: $ARCH"
+
+echo "CPU Cores: $(nproc)"
+
+MEM=$(free -h | awk '/Mem:/ {print $3 " / " $2}')
+echo "Memory Usage: $MEM"
+
+echo "Load Average: $(uptime | awk -F'load average:' '{print $2}')"
+
+print_star
 #---------------------------------------------------------
