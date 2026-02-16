@@ -1,6 +1,13 @@
 #!/bin/bash
 # this script is used for networking monitoring along with system monitoring
 # os realted which is /etc/os-release file , battery related info , cpu realted info, 
+#---------------------------------------------------------------
+#variables
+battery_info_path=/sys/class/power_supply
+batteries=$(ls $battery_info_path | grep -i "bat")
+
+#---------------------------------------------------------------
+#functions
 print_star(){
          echo "================================================"
 }
@@ -18,7 +25,7 @@ print_line(){
 	print_star
 }
 #-------------------------------------------------------
-echo "Welcome $(whoami)"
+echo "WELCOME $(whoami)"
 error_check
 if [ "$1" == '-s' ]
 then
@@ -31,25 +38,25 @@ error_check
 cat /etc/os-release | grep "PRETTY_NAME" | echo Operating System : $(cut -d "=" -f 2 | tr -d " ")
 error_check
 lscpu | grep "Model name" | echo "CPU-Model-name: $(cut -d ":" -f 2 | tr -d " ")"
-
-upower -v >> /dev/null
-if [ $? != 0 ]
-then
-		print_star
-		echo "Upower command not installed"
-		sudo apt install uptime >> /dev/null # currently doing only for debian but we have to package manager of all other distro as well 
-		echo "Installing upower command"
-fi
-print_star
 #-------------------------------------------------------
 print_line "Battery"
-upower -b | grep "percentage" | echo "Battery Percentage: $(cut -d ":" -f 2 | tr -d " ")"
-upower -b | grep "state" | echo "Current-state: $(cut -d ":" -f 2 | tr -d " ")"
-upower -b | grep "temperature" | echo "Battery Temperature: $(cut -d ":" -f 2 | tr -d " ")"
-upower -b | grep " charge-start-threshold" | echo "Charging-Threshold-start: $(cut -d ":" -f 2 | tr -d " ")"
-upower -b | grep " charge-end-threshold" | echo "Charging-Threshold-end: $(cut -d ":" -f 2 | tr -d " ")"
-upower -b | grep "charge-cycles" | echo "Number of charge cycles: $(cut -d ":" -f 2 | tr -d " ")"
-upower -b | grep "time to empty" | echo "Time to empty: $(cut -d ":" -f 2 | tr -d " ")"
+echo "Number of Batteries: $(echo $batteries | wc -l)";
+for i in $batteries;
+do 
+	echo "-------------------------------------------------"
+	echo "$i: "
+	echo "Model: $(cat $battery_info_path/$i/model_name)";
+	echo "Manufacturer: $(cat $battery_info_path/$i/manufacturer)";
+	echo "Serial_Number: $(cat $battery_info_path/$i/serial_number)";
+	echo "percentage: $(cat $battery_info_path/$i/capacity)";
+	echo "Status: $(cat $battery_info_path/$i/status)";
+	echo "Health: $(cat $battery_info_path/$i/health)";
+	echo "Status: $(cat $battery_info_path/$i/status)";
+	echo "Charge_Start_Threshold: $(cat $battery_info_path/$i/charge_control_start_threshold)";
+	echo "Charge_End_Threshold: $(cat $battery_info_path/$i/charge_control_end_threshold)";
+	echo "Cycles_Completed: $(cat $battery_info_path/$i/cycle_count)";
+	echo "--------------------------------------------------"
+done
 #------------------------------------------------------
 elif [ "$1" == '-n' ]
 then
