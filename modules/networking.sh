@@ -9,7 +9,9 @@
         # 3. check default route
         # 4. test connectivity
         # 5. test DNS
-
+        #--------------------------------------------------------------
+        #variables
+          route_interface=$(ip route | grep "default" | cut -d " " -f 5);
         #---------------------------------------------------------------
         #functions
         print_star(){
@@ -32,6 +34,14 @@
                 ip addr show $1 | grep "inet" | grep -v "inet6" >> /dev/null
                 return $?;
         }
+        ip_connection_check(){
+                ping -c 1 8.8.8.8 > /dev/null
+                return $?
+        }
+        dns_check(){
+                ping -c 1 www.google.com > /dev/null
+                return $?
+        }
         netcheck(){
                 Number_of_interface=$(ls /sys/class/net | wc -l);
                 echo "Number of network interfaces available: $Number_of_interface"
@@ -44,15 +54,30 @@
                                 check_ip4 $interface
                                 if [ $? -eq 0 ]
                                         then echo "Interface $interface is ip configured"
+                                        if [ $route_interface == $interface ]
+                                                then echo "$interface is set as default route"
+                                        fi
                                 else
-                                        echo "Interface $interface is not ip configured"
+                                        echo "Interface $interface is not ip configured" 
                                 fi
                            else
                                 echo "Interface $interface: not link-ready"
                            fi
                         done;
-                        
+                ip_connection_check 
+                if [ $? -eq 0 ]
+                        then echo "Interface $route_interface is connected to internet"
+                else
+                        echo "Interface $route_interface is not connected to internet"
+                fi
+                dns_check
+                if [ $? -eq 0 ]
+                        then echo "DNS is configured"
+                else
+                        echo "DNS is not configured or it has some error"
+                fi
         }
+
         #-------------------------------------------------------
         print_line Networking
         netcheck 
