@@ -9,6 +9,13 @@
         # 3. check default route
         # 4. test connectivity
         # 5. test DNS
+        # # netinfo 
+        # 1. default route interface info
+        #    a. name and ip 
+        #    b. gateway 
+        #    c. DNS servers
+        #    d. MAC address
+        #    e. MTU and other important details
         #--------------------------------------------------------------
         #variables
           route_interface=$(ip route | grep "default" | cut -d " " -f 5);
@@ -77,9 +84,18 @@
                         echo "DNS is not configured or it has some error"
                 fi
         }
+        netinfo(){
+                echo "=============Network Information================"
+                echo " "
+                echo "Default route interface: $route_interface"
+                ip_route_interface=$(ip addr show $route_interface | grep "inet" | grep -v "inet6" | awk '{print $2'});
+                echo "IPv4 of route interface $route_interface: $ip_route_interface"
 
+        }
         #-------------------------------------------------------
         print_line Networking
         netcheck 
+        print_star
+        netinfo
         print_star
         #-------------------------------------------------------
