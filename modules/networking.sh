@@ -89,8 +89,17 @@
                 echo " "
                 echo "Default route interface: $route_interface"
                 ip_route_interface=$(ip addr show $route_interface | grep "inet" | grep -v "inet6" | awk '{print $2'});
+                gateway_interface=$(ip route | grep "default" | grep "via" | awk '{print $3}')
+                dns_servers=$(cat /etc/resolv.conf | grep "nameserver")
                 echo "IPv4 of route interface $route_interface: $ip_route_interface"
-
+                echo "Default Gateway is: $gateway_interface"
+                echo "DNS Servers:"
+                echo "$dns_servers" | sed 's/^/  /'
+                echo ""
+                mac_address=$(ip link show $route_interface | grep "link/ether" | awk '{print $2}')
+                echo "MAC Address: $mac_address"
+                mtu=$(ip link show $route_interface | grep "mtu" | awk '{print $5}')
+                echo "MTU: $mtu"
         }
         #-------------------------------------------------------
         print_line Networking
