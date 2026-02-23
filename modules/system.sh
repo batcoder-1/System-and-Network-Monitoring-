@@ -16,6 +16,9 @@ print_line(){
 	echo "$1 section" 
 	print_star
 }
+user_check(){
+        uptime | grep "user" > /dev/null
+}
 #-------------------------------------------------------
 print_star
 print_line "System"
@@ -23,8 +26,13 @@ echo "Kernel Version: $(uname -r)"
 echo "System Uptime: $(uptime -p)"
 
 USERS=$(uptime | cut -d "," -f 2 | xargs)
-echo "Active Users: $USERS"
-
+if user_check
+then
+    echo "Active Users: $USERS"
+else
+     USERS=$(uptime | cut -d "," -f 3 | xargs)
+      echo "Active Users: $USERS"
+fi
 OS=$(grep PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')
 echo "Operating System: $OS"
 

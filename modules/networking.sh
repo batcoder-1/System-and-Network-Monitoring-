@@ -16,6 +16,10 @@
         #    c. DNS servers
         #    d. MAC address
         #    e. MTU and other important details
+        # # netports
+        # 1. Only listening tcp and upd ports 
+        #       a. another flag for all portd
+        #       b. flag for all the ports as well  
         #--------------------------------------------------------------
         #variables
           route_interface=$(ip route | grep "default" | cut -d " " -f 5);
