@@ -18,7 +18,7 @@
         #    e. MTU and other important details
         # # netports
         # 1. Only listening tcp and upd ports 
-        #       a. another flag for all portd
+        #       a. another flag for all ports
         #       b. flag for all the ports as well  
         #--------------------------------------------------------------
         #variables
@@ -105,10 +105,18 @@
                 mtu=$(ip link show $route_interface | grep "mtu" | awk '{print $5}')
                 echo "MTU: $mtu"
         }
+        netports(){
+                echo "=============Network Information================"
+                echo " "
+                echo "All open tcp ports are: "
+                ss -lt | column -t
+        }
         #-------------------------------------------------------
         print_line Networking
         netcheck 
         print_star
         netinfo
+        print_star
+        netports
         print_star
         #-------------------------------------------------------

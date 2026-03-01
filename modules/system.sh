@@ -26,7 +26,7 @@ echo "Kernel Version: $(uname -r)"
 echo "System Uptime: $(uptime -p)"
 
 USERS=$(uptime | cut -d "," -f 2 | xargs)
-if user_check
+        if user_check
 then
     echo "Active Users: $USERS"
 else
