@@ -53,5 +53,19 @@ EXAMPLES
 NOTES
     - Some modules require Linux tools like: ip, ss, ping, lscpu, free.
 
+RUN FROM ANY DIRECTORY (PROJECT COMMAND: netdiag)
+    By default, run from project directory:
+        ./monitor.sh -s
+
+    Create a global symbolic link (requires root privileges):
+        sudo chmod +x /home/naman/Devops/System-and-Network-Monitoring-/monitor.sh
+        sudo ln -sf /home/naman/Devops/System-and-Network-Monitoring-/monitor.sh /usr/local/bin/netdiag
+
+    Then run from any working directory:
+        netdiag -s
+        netdiag -b
+        netdiag -n
+        netdiag -h
+
 ================================================
-EOF
+EOF  

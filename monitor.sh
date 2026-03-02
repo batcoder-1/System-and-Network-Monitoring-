@@ -24,8 +24,26 @@ print_line(){
 	echo "$1 section" 
 	print_star
 }
+
+get_script_dir(){
+	local source="${BASH_SOURCE[0]}"
+	while [ -L "$source" ]
+	do
+		local dir
+		dir="$(cd -P "$(dirname "$source")" && pwd)"
+		source="$(readlink "$source")"
+		if [[ "$source" != /* ]]
+		then
+			source="$dir/$source"
+		fi
+	done
+	cd -P "$(dirname "$source")" && pwd
+}
+
+SCRIPT_DIR="$(get_script_dir)"
+
 run_script(){
-	"$(dirname "$0")"/$1
+	bash "$SCRIPT_DIR/$1"
 }
 #-------------------------------------------------------
 echo "WELCOME $(whoami)"
