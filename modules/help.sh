@@ -1,23 +1,57 @@
-#---------------------------------------------------------------
-#functions
+#!/bin/bash
+
 print_star(){
-         echo "================================================"
+    echo "================================================"
 }
-error_check(){
-if [ $? != 0 ]
-then
-        print_star
-        echo "Error occured kindly look the error logs for more information"
-	print_star
-        exit 1
-fi
-}
-print_line(){
-	echo "$1 section" 
-	print_star
-}
-#-------------------------------------------------------
-print_line Help
-echo "Help Section"
-print_star
-#-------------------------------------------------------
+
+cat << 'EOF'
+================================================
+        SYSTEM AND NETWORK MONITORING HELP
+================================================
+
+USAGE
+    ./monitor.sh [OPTION]
+
+OPTIONS
+    -s    Run system monitoring
+    -b    Run battery monitoring
+    -n    Run networking monitoring
+    -h    Show this help message
+
+MODULES
+    1) system.sh
+       - Kernel version
+       - System uptime
+       - Active users
+       - Operating system
+       - CPU model, architecture, cores
+       - Memory usage
+       - Load average
+
+    2) battery.sh
+       - Number of batteries
+       - Model, manufacturer, serial number
+       - Capacity percentage
+       - Health and status
+       - Temperature
+       - Charge thresholds
+       - Cycle count
+
+    3) networking.sh
+       - Interface/link readiness check
+       - IPv4/default route verification
+       - Internet and DNS check
+       - Route interface, gateway, DNS, MAC, MTU
+       - Listening TCP/UDP ports
+
+EXAMPLES
+    ./monitor.sh -s
+    ./monitor.sh -b
+    ./monitor.sh -n
+    ./monitor.sh -h
+
+NOTES
+    - Some modules require Linux tools like: ip, ss, ping, lscpu, free.
+
+================================================
+EOF
