@@ -106,10 +106,10 @@
                 echo "MTU: $mtu"
         }
         netports(){
-                echo "=============Network Information================"
+                echo "=============Listening Ports================"
                 echo " "
                 echo "All open tcp ports are: "
-                ss -lt | column -t
+                ss -H -ltup | column -t
         }
         #-------------------------------------------------------
         print_line Networking
